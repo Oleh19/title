@@ -1,0 +1,36 @@
+---
+description: General coding rules and functional programming principles
+alwaysApply: true
+---
+
+Always write code in a functional style (pure functions, immutable data, composition).
+Do not use classes, inheritance, or OOP patterns unless strictly necessary.
+Do not use switch/case constructs — instead use object mapping or function dispatchers.
+Avoid excessive if/else chains. Use guard clauses, lookup tables, or logic composition.
+Do not write comments in code (neither //, nor /** */).
+Code should be self-documenting through names and structure.
+Do not format existing files.
+Do not use console.log, debugger, or temporary logs.
+Write declaratively and avoid side effects.
+Use const instead of let/var, avoid mutations.
+Do not use any, avoid type casts.
+Minimize dependencies, use standard language features.
+Do not change existing quote style, indentation, and imports.
+When logical branching is needed — use functional mappers instead of nested conditions.
+Use immutable operations (map, filter, reduce, etc.).
+Do not leave magic numbers or strings — extract them into constants.
+Write code as an experienced senior frontend developer.
+
+Declarative Programming:
+- Describe WHAT should happen, not HOW
+- Use data transformations instead of step-by-step instructions
+- Express logic through composition of pure functions
+- Let framework handle implementation details
+- Focus on the result, not the process
+
+Currying and Partial Application:
+- Use currying for function composition and reusability
+- Create specialized functions from generic ones through partial application
+- Prefer curried functions when partial application is common
+- Use currying for dependency injection without explicit parameter passing
+- Build pipelines and data transformations using curried functions

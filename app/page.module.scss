@@ -1,0 +1,7 @@
+.page {
+  display: flex;
+  min-height: calc(100vh - var(--height-header));
+  justify-content: center;
+  padding-block: var(--spacing-2xl);
+  padding-inline: var(--spacing-4xl);
+}

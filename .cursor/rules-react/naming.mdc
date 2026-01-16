@@ -1,0 +1,24 @@
+---
+description: Naming conventions and code style standards
+alwaysApply: true
+---
+
+Components: PascalCase. Name must accurately describe purpose: `UserProfile`, `ProductCard`, `NavigationMenu`. Avoid generic names: `Box`, `Wrapper`, `Container` (only if truly universal).
+Functions and variables: camelCase. Verbs for actions, nouns for data: `getUserData()`, `isLoading`, `validateEmail()`, `handleClick()`.
+Constants: UPPER_SNAKE_CASE or PascalCase for object. `MAX_RETRY_COUNT`, `API_BASE_URL`, `StatusEnum = { PENDING, APPROVED, REJECTED }`.
+Boolean variables: Prefix `is`, `has`, `should`, `can`. `isLoading`, `hasPermission`, `shouldShow`, `canEdit`.
+Event handlers: Prefix `handle`. `handleSubmit`, `handleClick`, `handleChange`.
+Async functions: Action verb. `fetchUsers()`, `deletePost()`, `updateSettings()`. Do not use `onFetch`, `onDelete`.
+Custom hooks: Prefix `use`. `useAuth()`, `useDataFetching()`, `useLocalStorage()`. Return object with clear keys.
+Files: Match main export name. `UserProfile.tsx` contains `UserProfile`, `useAuth.ts` contains `useAuth`.
+Naming patterns:
+  - Get/Pull: `getUser(id)` — returns data
+  - Find/Search: `findUserByEmail(email)` — search
+  - Create/Add: `createUser(data)` — create new
+  - Update/Edit: `updateUser(id, data)` — update existing
+  - Delete/Remove: `deleteUser(id)` — delete
+  - Validate/Check: `validateEmail(email)` — validate
+  - Parse/Format: `parseDate(dateString)` — format transformation
+Collections: Plural. `users`, `productItems`, `errorMessages`.
+Single objects: Singular. `currentUser`, `selectedProduct`, `activeTab`.
+Avoid: magic numbers (`if (status === 1)`), single-letter variables (except iterators `i`, `j`), abbreviations without context (`usr`, `prod`, `btn`).

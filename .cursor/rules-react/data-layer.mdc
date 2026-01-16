@@ -1,0 +1,26 @@
+---
+description: API, state management, and data layer patterns
+globs: ["**/api/**", "**/stores/**", "**/hooks/**"]
+alwaysApply: false
+---
+
+Make all network calls in api/ adapters.
+Use typed clients and timeouts; support cancellation.
+Support operation cancellation (AbortController).
+Map and validate responses to DTO and then to domain models before passing to UI.
+Isolate business logic from API implementation details.
+
+Default: local state (useState, useReducer) + React Query / TanStack Query for server state.
+Use global stores (Redux, Zustand, Context API) only when necessary; normalize data for shared caches.
+Use Context API only for global data that changes rarely (theme, language, current user).
+Avoid prop drilling through Context API; each context must have one clear task.
+Split large stores into smaller independent stores.
+Normalize data for shared caches.
+Avoid state duplication between components.
+
+Use form management libraries (React Hook Form, Formik) instead of manual management.
+Validate forms on client AND server.
+Show validation errors inline next to fields.
+Prevent double submission (disable submit button during submission).
+Use debounce for search fields.
+Provide optimistic updates when possible.

@@ -1,0 +1,18 @@
+---
+description: Cursor AI generation behavior and constraints
+alwaysApply: true
+---
+
+Do not insert comments, explanations, or descriptions.
+Do not generate tests or documentation without request.
+Do not format existing files.
+Do not suggest refactor formatting.
+Generate only clean code.
+When continuing code, do not overwrite existing lines.
+Follow existing project style.
+When creating modules, apply minimal public API (indexes export only necessary).
+Preserve original formatting and indentation.
+Do not change import order, do not add or remove unnecessary ones.
+When creating a new file, use 2 spaces for indentation.
+Do not add empty lines at the end of file.
+Do not reformat JSX when auto-generating.

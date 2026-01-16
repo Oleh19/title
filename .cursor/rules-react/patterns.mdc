@@ -1,0 +1,19 @@
+---
+description: Functional programming patterns and OOP patterns in functional style
+alwaysApply: true
+---
+
+Prefer pure functions and immutable data transformations.
+Side effects must be isolated in adapters or top-level hooks (use useEffect there).
+Domain services must be pure and deterministic (input) => output.
+Prefer immutable operations everywhere possible.
+
+Apply at all levels: components, hooks, helper functions, and functions inside components.
+Factory Pattern: Factory functions instead of classes. `const createUser = (data) => ({ ...data, id: generateId() })`. Use for creating objects as well as components.
+Strategy Pattern: Use functions as strategies. `const strategies = { twitter: authTwitter, google: authGoogle }`. Apply in components for algorithm selection.
+Adapter Pattern: Adapter functions for data transformation between layers. `const adaptApiResponse = (dto) => toDomain(dto)`. Use in components for props adaptation.
+Decorator Pattern: Higher-order functions/hooks for wrapping logic (logging, caching, validation). `const withLogging = (fn) => (...args) => { /* ... */ }`. Apply to hooks and functions.
+Command Pattern: Functions as commands. `const commands = { createUser, updateUser }`. Use in component event handlers.
+Currying Pattern: Transform multi-argument functions into sequences of single-argument functions. `const add = (a) => (b) => a + b`. Use for function composition, partial application, and dependency injection.
+Partial Application Pattern: Fix some arguments of a function to create a specialized version. `const multiplyBy2 = (b, c) => multiply(2, b, c)`. Use for creating reusable, domain-specific functions.
+Avoid inheritance and classes — use composition, modules, and pure functions at all levels of abstraction.

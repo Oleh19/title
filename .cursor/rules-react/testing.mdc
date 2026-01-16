@@ -1,0 +1,13 @@
+---
+description: Testing standards and requirements
+globs: ["**/*.test.*", "**/*.spec.*", "**/__tests__/**"]
+alwaysApply: false
+---
+
+Write unit tests for domain logic and custom hooks (Vitest + React Testing Library).
+Integration tests for composite flows (component + hook + mocked adapters).
+E2E for critical flows (Playwright/Cypress).
+CI: typecheck + lint + unit tests on PR. New/changed code must include tests.
+Tests must verify presence and meaningful assertions.
+Use React Testing Library for rendering components in tests.
+Mock custom hooks and stores when testing components.

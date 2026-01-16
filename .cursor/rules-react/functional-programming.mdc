@@ -1,0 +1,331 @@
+---
+description: React + Functional Programming core rules
+globs: ["**/*.tsx", "**/*.jsx", "**/hooks/**", "**/utils/**", "**/helpers/**"]
+alwaysApply: true
+---
+
+## Core Rule for Cursor (React + Functional Programming)
+
+React Coding Rules — Functional Programming First
+
+Write React code in a functional programming style, following the principles below.
+
+### 1. Component Architecture
+
+Component = thin container
+
+All business logic must be extracted to:
+- custom hooks
+- pure utilities (utils, domain)
+
+Component is responsible only for data binding and UI
+
+### 2. Pure Functions
+
+All computation logic must be pure functions
+
+Pure function requirements:
+- Returns a single value
+- Uses only its arguments (no global state, no external dependencies)
+- Does not mutate existing values (returns new values instead)
+
+Forbidden:
+- mutating arguments
+- accessing global state
+
+Same input → same output
+
+### 3. Core Functional Programming Principles
+
+#### Single Responsibility
+- Each function must do one thing and do it well
+- Functions must have a single, clear purpose
+- Break down complex functions into smaller, focused units
+- One function = one responsibility
+
+#### No Side Effects
+- Functions must not cause side effects (no mutations, no I/O, no external state changes)
+- Side effects are isolated to specific layers (useEffect, event handlers)
+- Pure functions must not modify anything outside their scope
+- All side effects must be explicit and documented
+
+#### Referential Transparency
+- A function call can be replaced with its return value without changing program behavior
+- Same arguments always produce the same result
+- No hidden dependencies or external state
+- Functions are predictable and testable in isolation
+
+### 4. Immutability
+
+Forbidden to mutate:
+- props
+- hook arguments
+- state objects directly
+
+Use:
+- spread ({ ...obj }, [...arr])
+- map / filter / reduce
+
+Data is considered immutable by default
+
+### 5. State in React
+
+useState / useReducer — only as boundary
+
+Forbidden to mutate state inside utilities
+
+State updates:
+- through pure functions that return new values
+- setState(prev => updateState(prev, payload))
+
+### 6. Memoization
+
+useMemo:
+- only for pure computations
+- no side effects
+
+useCallback:
+- only for function memoization
+- minimal logic inside
+
+### 7. Side Effects
+
+Side effects allowed only in:
+- useEffect
+- event handlers
+- custom hooks
+
+All side-effect logic must be isolated
+
+Do not mix API / localStorage / timers with computations
+
+### 8. Higher-Order Functions
+
+Forbidden: for, while, switch
+
+Use:
+- map
+- filter
+- reduce
+- some / every
+
+Express conditional logic through:
+- composition
+- lookup objects (dictionaries)
+
+### 9. Currying and Partial Application
+
+Currying is a fundamental functional programming technique.
+
+Currying transforms a function with multiple arguments into a sequence of functions, each taking a single argument.
+
+Use currying for:
+- Function composition and reusability
+- Creating specialized functions from generic ones
+- Dependency injection through partial application
+- Building pipelines and data transformations
+
+Currying pattern:
+```javascript
+const add = (a) => (b) => a + b
+const add5 = add(5)
+const result = add5(3)
+```
+
+Partial application pattern:
+```javascript
+const multiply = (a, b, c) => a * b * c
+const multiplyBy2 = (b, c) => multiply(2, b, c)
+```
+
+When to use:
+- Functions with multiple parameters that are often called with the same initial arguments
+- Creating reusable, composable functions
+- Dependency injection without explicit parameter passing
+- Building domain-specific functions from generic utilities
+
+Prefer currying over multiple parameters when:
+- Function will be partially applied frequently
+- Function composition is needed
+- Creating specialized versions of generic functions
+
+### 10. Declarative Programming
+
+Code must be declarative, not imperative.
+
+Declarative code describes WHAT should happen, not HOW.
+
+Principles:
+- Express intent through data transformations
+- Use composition of pure functions
+- Avoid step-by-step instructions
+- Focus on the result, not the process
+
+Declarative patterns:
+```javascript
+const activeUsers = users.filter(isActive).map(toDisplayFormat)
+```
+
+Instead of imperative:
+```javascript
+const activeUsers = []
+for (let i = 0; i < users.length; i++) {
+  if (users[i].active) {
+    activeUsers.push(formatUser(users[i]))
+  }
+}
+```
+
+Declarative in components:
+- Describe UI state through data
+- Use useMemo/derived values instead of manual updates
+- Express conditions through data transformations
+- Let React handle rendering optimizations
+
+Benefits:
+- More readable and maintainable
+- Easier to reason about
+- Better testability
+- Natural fit for functional programming
+
+### 11. Custom Hooks
+
+Custom hook:
+- accepts dependencies as arguments
+- does not access global state directly
+
+Returns:
+- readonly state
+- pure functions
+
+### 12. TypeScript
+
+All hooks and utilities:
+- with explicit types
+- with readonly where possible
+
+Forbidden: any
+
+### 13. Exception Explanations
+
+❗ If imperative or OOP approach is unavoidable — explicitly explain why and use the closest FP-compatible alternative.
+
+### ⛔ Blacklist (Critical for Cursor)
+
+Cursor MUST NOT:
+- mutate props
+- change state inside utilities
+- use for, while, switch
+- write business logic in .tsx/.jsx files
+- mix API calls with computations
+- use any
+
+### 📌 Рекомендація
+
+Before writing React code, first design pure domain functions, then connect them to React state.
+
+---
+
+## React Functional Programming Hook Architecture
+
+When writing React code, you MUST strictly follow this Functional Programming architecture, regardless of whether the project uses JavaScript or TypeScript.
+
+### 📁 Mandatory hook structure
+
+Each custom hook MUST be structured as:
+
+```
+useFeature/
+ ├─ domain      // pure functional logic (NO React)
+ ├─ state       // React state boundary ONLY
+ └─ useFeature  // hook glue layer
+```
+
+(File extensions are irrelevant.)
+
+### 1️⃣ Domain Layer — Pure Functional Core
+
+Rules:
+
+- ONLY pure functions
+- NO React imports
+- NO side effects
+- NO mutations
+- Immutable data by default
+
+Requirements:
+
+- Functions receive all data via arguments
+- Functions return NEW values instead of mutating inputs
+- Same input → same output
+- Logic must be framework-agnostic
+
+### 2️⃣ State Layer — React Boundary
+
+Rules:
+
+- React APIs (useState, useReducer, useMemo) allowed ONLY here
+- State updates MUST go through a single setter function
+- NO direct state mutations
+- NO business logic
+
+Required update pattern:
+
+```javascript
+setState(prev => next)
+```
+
+State must be exposed as read-only.
+
+### 3️⃣ Hook Layer — Glue Code
+
+Rules:
+
+- NO business logic
+- ONLY function composition
+- Domain functions are wired to React state
+- useMemo MUST be pure
+- useEffect ONLY for side effects
+
+Hook responsibilities:
+
+- Connect domain logic to React state
+- Expose readonly state and actions
+- Isolate side effects
+
+### 🧠 Architectural Principles
+
+- React components are thin UI layers
+- Business logic never lives in .tsx/.jsx files
+- State is immutable by default
+- Declarative logic over imperative flow
+- Function composition over control flow
+- Currying and partial application for function reusability
+- Data transformations express intent clearly
+
+### ⛔ Forbidden (Strict Blacklist)
+
+DO NOT:
+
+- Mutate props, state, or function arguments
+- Use for, while, switch
+- Use mutating array/object methods (push, splice, direct assignment)
+- Write business logic inside components
+- Mix side effects with calculations
+- Rely on implicit global state
+
+### 🧪 Testing Rule
+
+Domain logic MUST be testable in isolation without React.
+
+### ❗ Exception Rule
+
+If a purely functional approach is not feasible:
+
+- Explicitly explain why
+- Use the closest FP-compatible alternative
+
+### 📌 Always Follow This Principle
+
+First design pure domain functions.
+Then connect them to React state.

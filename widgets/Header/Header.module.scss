@@ -1,0 +1,27 @@
+.siteHeader {
+  height: var(--height-header);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: var(--spacing-4xl);
+  position: relative;
+  border-bottom: var(--border-width) solid var(--header-border);
+}
+
+.siteHeader::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--header-bg);
+  backdrop-filter: blur(var(--blur-backdrop));
+  -webkit-backdrop-filter: blur(var(--blur-backdrop));
+  z-index: var(--z-index-base);
+}
+
+.siteHeaderTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  position: relative;
+  z-index: var(--z-index-elevated);
+  color: var(--color-white);
+}

@@ -1,0 +1,25 @@
+---
+description: Code quality, security, and accessibility standards
+alwaysApply: true
+---
+
+Use semantic HTML by default.
+Add ARIA attributes only when necessary.
+Ensure keyboard navigation for interactive elements.
+Manage focus for modals, menus, forms.
+Do not store secrets in frontend code.
+Avoid dangerouslySetInnerHTML without sanitization.
+Sanitize all user content.
+
+Use `.env` files for configuration (`.env`, `.env.local`, `.env.production`).
+Do not store secrets in `.env` files; use secure vault for production.
+Type environment variables through configuration object.
+Validate all environment variables on application startup.
+Use Vite env variables with `VITE_` prefix for Vite projects.
+Use Create React App env variables with `REACT_APP_` prefix for CRA projects.
+
+Implement ESLint + Prettier for code consistency.
+Provide exceptions to recommended rules inline only with justification.
+Setup pre-commit hooks (husky + lint-staged): formatting and linting.
+Use conventional commits and semantic-release workflows.
+Automate formatting and linting.

@@ -1,0 +1,14 @@
+---
+description: Error handling patterns and best practices
+alwaysApply: true
+---
+
+Implement global error handlers at router level and critical components.
+Use Error Boundaries for handling errors in child components.
+Centralized error handling with user context (toast notifications, error pages).
+Use try-catch for async operations in hooks.
+Log errors to monitoring system (Sentry, LogRocket) for debugging in production.
+Do not allow "silent failures" — all errors must be handled and logged.
+Provide fallback UI on errors (Error state component).
+Use Retry mechanisms for network errors with exponential backoff.
+Use Error Boundary pattern through components for error isolation.

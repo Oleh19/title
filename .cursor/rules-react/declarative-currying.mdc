@@ -1,0 +1,204 @@
+---
+description: Declarative programming and currying principles
+globs: ["**/*.tsx", "**/*.jsx", "**/hooks/**", "**/utils/**", "**/helpers/**"]
+alwaysApply: true
+---
+
+## Declarative Programming
+
+Code must be declarative, describing WHAT should happen, not HOW.
+
+### Core Principles
+
+Declarative code:
+- Expresses intent through data transformations
+- Uses composition of pure functions
+- Avoids step-by-step instructions
+- Focuses on the result, not the process
+- Lets framework handle implementation details
+
+### Declarative vs Imperative
+
+Declarative (preferred):
+```javascript
+const activeUsers = users
+  .filter(isActive)
+  .map(toDisplayFormat)
+  .sort(byName)
+```
+
+Imperative (avoid):
+```javascript
+const activeUsers = []
+for (let i = 0; i < users.length; i++) {
+  if (users[i].active) {
+    activeUsers.push(formatUser(users[i]))
+  }
+}
+activeUsers.sort((a, b) => a.name.localeCompare(b.name))
+```
+
+### Declarative Patterns
+
+Data transformations:
+- Use `map`, `filter`, `reduce` for transformations
+- Chain operations to express data flow
+- Compose functions to build complex logic
+- Avoid intermediate variables when possible
+
+Conditional logic:
+- Use ternary operators: `condition ? valueA : valueB`
+- Use logical operators: `condition && value`
+- Use lookup objects instead of if/else chains
+- Express conditions through data structure
+
+State management:
+- Describe UI state through data
+- Use useMemo/derived values instead of manual updates
+- Express conditions through data transformations
+- Let React handle rendering optimizations
+
+### Benefits
+
+- More readable and maintainable
+- Easier to reason about
+- Better testability
+- Natural fit for functional programming
+- Framework can optimize automatically
+
+## Currying and Partial Application
+
+Currying is a fundamental functional programming technique for function composition and reusability.
+
+### What is Currying
+
+Currying transforms a function with multiple arguments into a sequence of functions, each taking a single argument.
+
+```javascript
+const add = (a) => (b) => a + b
+const add5 = add(5)
+const result = add5(3)
+```
+
+### When to Use Currying
+
+Use currying for:
+- Function composition and reusability
+- Creating specialized functions from generic ones
+- Dependency injection through partial application
+- Building pipelines and data transformations
+- Functions that are often called with the same initial arguments
+
+### Currying Patterns
+
+Basic currying:
+```javascript
+const multiply = (a) => (b) => (c) => a * b * c
+const multiplyBy2 = multiply(2)
+const multiplyBy2And3 = multiplyBy2(3)
+const result = multiplyBy2And3(4)
+```
+
+Currying with multiple arguments:
+```javascript
+const add = (a, b) => a + b
+const curriedAdd = (a) => (b) => add(a, b)
+const add5 = curriedAdd(5)
+```
+
+Currying for dependency injection:
+```javascript
+const fetchData = (apiClient) => (endpoint) => (params) => 
+  apiClient.get(endpoint, params)
+
+const fetchWithClient = fetchData(apiClient)
+const fetchUsers = fetchWithClient('/users')
+const users = await fetchUsers({ page: 1 })
+```
+
+### Partial Application
+
+Partial application fixes some arguments of a function to create a specialized version.
+
+```javascript
+const multiply = (a, b, c) => a * b * c
+const multiplyBy2 = (b, c) => multiply(2, b, c)
+const result = multiplyBy2(3, 4)
+```
+
+### Currying vs Partial Application
+
+Currying:
+- Always returns a function until all arguments are provided
+- Each function takes exactly one argument
+- Enables maximum flexibility in composition
+
+Partial application:
+- Fixes some arguments, returns a function with remaining arguments
+- Can fix multiple arguments at once
+- More practical for common use cases
+
+### Practical Examples
+
+Event handlers:
+```javascript
+const handleClick = (id) => (event) => {
+  event.preventDefault()
+  selectItem(id)
+}
+
+const handleUserClick = handleClick(userId)
+```
+
+API calls:
+```javascript
+const createApiCall = (baseUrl) => (endpoint) => (params) =>
+  fetch(`${baseUrl}${endpoint}`, params)
+
+const apiCall = createApiCall('https://api.example.com')
+const getUser = apiCall('/users')
+```
+
+Data transformations:
+```javascript
+const mapWith = (transform) => (array) => array.map(transform)
+const filterWith = (predicate) => (array) => array.filter(predicate)
+
+const mapToNames = mapWith((user) => user.name)
+const filterActive = filterWith((user) => user.active)
+
+const activeUserNames = users
+  .filter(filterActive)
+  .map(mapToNames)
+```
+
+Hooks with currying:
+```javascript
+const useApiCall = (baseUrl) => (endpoint) => {
+  const [data, setData] = useState(null)
+  useEffect(() => {
+    fetch(`${baseUrl}${endpoint}`).then(setData)
+  }, [baseUrl, endpoint])
+  return data
+}
+
+const useUsers = useApiCall('https://api.example.com')('/users')
+```
+
+### Best Practices
+
+- Prefer currying when function will be partially applied frequently
+- Use currying for function composition pipelines
+- Create specialized versions of generic functions through partial application
+- Use currying for dependency injection without explicit parameter passing
+- Build domain-specific functions from generic utilities
+- Keep curried functions focused and single-purpose
+- Document curried function signatures clearly
+
+### When NOT to Use Currying
+
+Avoid currying when:
+- Function is rarely partially applied
+- All arguments are always provided together
+- Currying makes code less readable
+- Performance is critical and currying adds overhead

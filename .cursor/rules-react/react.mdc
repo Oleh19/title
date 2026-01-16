@@ -1,0 +1,136 @@
+---
+description: React Hooks and best practices
+globs: ["**/*.tsx", "**/*.jsx", "**/hooks/**", "**/components/**", "**/utils/**"]
+alwaysApply: true
+---
+
+## Core Principles
+
+### Functional Components with Hooks
+- ALWAYS use functional components (never class components).
+- Use React Hooks — `useState`, `useEffect`, `useMemo`, `useCallback`, `useReducer`, `useContext`.
+- All state must be declared using `useState()` or `useReducer()`.
+- Use TypeScript interfaces or types for component props.
+- Use `forwardRef()` and `useImperativeHandle()` when parent needs to access child component methods or properties.
+
+### Component Structure
+- Component structure order: imports, types/interfaces, component function, exports.
+- Component naming: PascalCase (e.g., `UserProfile.tsx`, `GameBoard.tsx`).
+- File name should match component name.
+- Use functional components with hooks instead of class components.
+
+### Data and State
+- Use `useState()` for primitive values and simple objects.
+- Use `useReducer()` for complex state logic.
+- Initialize all state at the top level of component function.
+- For arrays: prefer immutable operations (map, filter, reduce). Direct mutation is allowed only when necessary for performance, but must be documented.
+- Use `useMemo()` for expensive calculations.
+
+### Memoization
+- Use `useMemo()` for derived state — automatically cached and re-evaluated only when dependencies change.
+- Memoized values should be pure functions — no side effects.
+- Use `useMemo()` instead of recalculating values on every render.
+- Never mutate data in memoized calculations — return new values.
+
+### Callbacks
+- Use `useCallback()` to memoize functions passed to child components.
+- Functions are not cached by default — use `useCallback()` for cached values.
+- Access state and props directly in callbacks.
+- Keep functions focused and single-purpose.
+
+### Side Effects
+- Use `useEffect()` for side effects (API calls, DOM manipulation, logging, subscriptions).
+- Prefer `useMemo()` over `useEffect()` when possible for derived state.
+- Use dependency array `[deps]` to control when effect runs.
+- Clean up side effects in `useEffect` return function (event listeners, timers, subscriptions, API requests).
+- Use `useEffect()` with empty dependency array `[]` for mount-only effects.
+
+### Props
+- Always define props using TypeScript interfaces or types.
+- Use TypeScript for prop types: `interface Props { ... }`.
+- Never mutate props directly — use state or callbacks.
+- Use default parameters for optional props.
+
+### Events
+- Define event handlers as functions: `const handleClick = () => { ... }`.
+- Pass handlers to JSX: `onClick={handleClick}`.
+- Use camelCase for event names: `onClick`, `onChange`, `onSubmit`.
+- Always pass event object or payload as argument to handler.
+
+### Refs
+- Use `useRef()` for DOM references: `const inputRef = useRef<HTMLInputElement>(null)`.
+- Access refs via `ref.current`.
+- Refs are not reactive — use state for reactive values.
+- Refs are populated after component is mounted.
+- Use `forwardRef()` to expose refs from custom components.
+
+### Lifecycle
+- Use `useEffect()` to replicate lifecycle behavior.
+- `useEffect(() => {}, [])` = componentDidMount.
+- `useEffect(() => { return () => {} }, [])` = componentWillUnmount.
+- `useEffect(() => {}, [deps])` = componentDidUpdate when deps change.
+- Clean up side effects in `useEffect` return function.
+
+### JSX
+- Keep JSX minimal — complex logic should be in `useMemo` or functions.
+- Use conditional rendering: `{condition && <Component />}` or `{condition ? <A /> : <B />}`.
+- Use `map()` for lists: `{items.map(item => <Item key={item.id} />)}`.
+- Always use `key` prop for list items — always use unique, stable keys.
+- Never use array index as `key` when items can be reordered.
+- Never use JSX comments `{/* ... */}` in production code.
+- Never use `dangerouslySetInnerHTML` without strict necessity (security risk — XSS vulnerability).
+
+### State Management
+- Prefer local component state over global state when possible.
+- Use Context API for global state that changes rarely (theme, language, current user).
+- Use Redux, Zustand, or Jotai for complex global state management.
+- Never modify global state directly — use actions/dispatchers.
+- Use `useSelector()` or custom hooks to access global state.
+
+### Custom Hooks
+- Extract reusable logic into custom hooks (functions starting with `use`).
+- Custom hooks should return readonly state and pure functions/methods.
+- Expose state as readonly to prevent mutations outside the hook.
+- Use custom hooks for sharing logic between components.
+- Keep hooks focused and single-purpose.
+- Example: `useAuth()`, `useDataFetching()`, `useLocalStorage()`.
+
+### Code Organization
+- One component per file.
+- Order: imports, types, component, exports.
+- Group imports: React imports, components, utilities, types, stores.
+- Keep component function at top level.
+
+### Performance
+- Use `React.memo()` for component memoization when props change rarely.
+- Use `useMemo()` for expensive calculations.
+- Use `useCallback()` for functions passed to memoized children.
+- Use `key` with lists for efficient list rendering.
+- Lazy load components with `React.lazy()`: `const Component = React.lazy(() => import('./Component'))`.
+- Use `Suspense` for lazy-loaded components.
+
+### TypeScript (if used)
+- Use `.tsx` extension for TypeScript React components.
+- Define prop types using TypeScript interfaces: `interface Props { ... }`.
+- Use `React.FC<Props>` or function declaration with typed props.
+- Use generics for reusable components: `function List<T>({ items }: Props<T>)`.
+
+### Anti-patterns to Avoid
+- Never mutate props directly — use state or callbacks.
+- Never forget to clean up side effects in `useEffect` return function.
+- Never use array index as `key` in lists when items can be reordered.
+- Never put business logic in JSX — use `useMemo` or functions.
+- Never forget to include dependencies in `useEffect` dependency array.
+- Never use class components in React — use functional components with hooks.
+
+### Best Practices
+- All memoized values must be pure and not modify external values.
+- State and methods must be maximally atomic and reusable.
+- Write code declaratively: describe reactive dependencies, not imperative steps.
+- Keep components small and focused — single responsibility principle.
+- Extract repeating JSX blocks into separate components.
+- Extract reusable logic into custom hooks.
+- Use meaningful names for components, functions, and variables.
+- Follow React style guide: https://react.dev/learn/thinking-in-react
+- Prefer `useState()` over `useReducer()` for simple state.
+- Use `useMemo()` and `useCallback()` only when performance is measured to be an issue.

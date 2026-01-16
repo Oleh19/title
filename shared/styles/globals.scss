@@ -1,0 +1,74 @@
+@import './reset';
+@import 'swiper/css';
+
+:root {
+  /* Colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-text-default: #16171b;
+  --background: var(--color-white);
+  --header-bg: #00000033;
+  --header-border: #ffffff66;
+  --info-description-color: #8f91a1;
+  --color-arrow-disabled: #c0c1d1;
+  --day-chip-border: #e8ebf4;
+  --day-chip-selected-bg: #f7f7fc;
+
+  /* Typography */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 22px;
+  --font-size-xl: 28px;
+
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 40px;
+  --spacing-3xl: 80px;
+  --spacing-4xl: 135px;
+
+  /* Border */
+  --border-width: 1px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-full: 50%;
+
+  /* Z-index */
+  --z-index-base: 0;
+  --z-index-elevated: 1;
+  --z-index-sticky: 2;
+
+  /* Component Sizes */
+  --size-icon: 24px;
+  --size-day-chip: 64px;
+  --size-avatar: 120px;
+  --height-header: 80px;
+  --height-month-label: 28px;
+
+  /* Effects */
+  --blur-backdrop: 20px;
+
+  /* Layout */
+  --shadow-card: 0 20px 52px 0 #00000040;
+  --card-width: 568px;
+  --card-padding: var(--spacing-2xl) var(--spacing-xl);
+  --info-row-width: 449px;
+}
+
+body {
+  background: var(--background) url('/bg.jpg') center / cover no-repeat fixed;
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+  color: var(--color-text-default);
+  margin: 0;
+  padding: 0;
+}

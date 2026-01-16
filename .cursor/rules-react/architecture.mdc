@@ -1,0 +1,41 @@
+---
+description: Architecture, module structure, and SOLID principles
+alwaysApply: true
+---
+
+Priority: modularity, explicit contracts (types), pure/domain logic, side effect isolation.
+Prefer small, testable units (pure functions, hooks, adapters).
+Minimize code complexity and nesting.
+Prefer modularity, composition, and reusability.
+Each custom hook must be atomic. Domain layer must be pure without side effects. Side effects are isolated to hook layer (useEffect, event handlers).
+Domain services must be pure and deterministic (input) => output.
+All computed data must be determined by input dependencies.
+Do not use global variables or window/document directly.
+Do not call API or side effects in component body without async/await and error-handling.
+Code must be easily testable and extensible.
+Avoid "magic" and implicit dependencies.
+Mark assumptions with `Assumption:` comment at the beginning of file.
+
+Each feature must be a module under `src/modules/<feature>/` or similar structure.
+Module must contain: public exports (index), ui/, hooks/, model/, api/.
+Required files inside module: index.ts (public exports), ui/ (presentational components), hooks/ (feature-specific custom hooks), model/ (domain types and pure services), api/ or infrastructure/ (adapters for HTTP, storage, analytics).
+Common primitives go to `src/shared/` (ui, hooks, libs).
+Composition layer in `src/composition/` for connecting providers and routes.
+Separate presentational components and containers.
+Isolate API and infrastructure code in adapters.
+
+Single Responsibility (SRP): Each function/hook/component must do one thing and do it well. Break down complex functions and components into small, reusable units. Applies to React components as well as functions inside them.
+Open/Closed (OCP): Functions/components must be open for extension through composition, closed for modification. Use higher-order hooks, render props, or function composition. Applies at all levels — from components to internal functions.
+Liskov Substitution: In functional style, replace inheritance with composition. Functions/components with the same signatures must be interchangeable. Applies to components as well as helper functions.
+Interface Segregation: Create small, specific functions/components instead of large multi-purpose ones. Avoid "god functions" and "god components" with many parameters/props. Each function inside component must have a clear purpose.
+Dependency Inversion: Functions/components must accept dependencies as parameters/props/context, not create them inside. Use dependency injection through closures, partial application, or props/context. Applies to hooks, components, and internal functions.
+
+Components: small, single responsibility, separation into presentational and container.
+Presentational components receive minimal props; without direct data fetching.
+Containers / pages: connect hooks + pass to presentational.
+Custom hooks:
+  - Naming `useXxx`, return object `{ state, actions, status }` or tuple with clear types.
+  - Without hidden network calls; accept dependencies (inversion) for easier testing.
+  - Always support cancellation for async operations (AbortController pattern).
+  - Avoid hooks with more than 5 dependencies — split into smaller hooks.
+  - Use `useMemo` and `useCallback` carefully — only when performance issue is measured or side effects are needed.

@@ -1,0 +1,32 @@
+---
+description: Performance optimization and lazy loading rules
+globs: ["**/router/**", "**/pages/**", "**/*.tsx", "**/*.jsx"]
+alwaysApply: false
+---
+
+Always use lazy loading for routing — all pages must load asynchronously.
+Use `React.lazy()` and `Suspense` for on-demand component loading.
+Must apply lazy loading for:
+  - All routes and pages of the application
+  - Heavy libraries (Google Maps, Chart.js, text/code editors)
+  - Modals and dialogs (not critical for first render)
+  - Content outside visible area (below-the-fold)
+  - Tabs and accordions (inactive tab content)
+  - Third-party widgets (analytics, chats, social plugins)
+Recommended to use lazy loading for:
+  - Lists > 100 items
+  - Large forms with many fields
+  - Dashboards with heavy charts
+  - Admin panels
+Use `prefetch` or `preload` for critical pages (home, frequently visited).
+Ensure smooth loading with fallback UI (Loading spinner, skeleton).
+Group related components into one chunk to prevent waterfall loading.
+
+Optimize based on facts: profile before complex optimizations.
+Use memoization (`useMemo`, `useCallback`) for pure computations and when working with expensive operations.
+Use `React.memo` for component memoization when props change rarely.
+Virtualize long lists (react-window, react-virtualized).
+Split code lazily (lazy loading components and routes).
+Preload critical resources when justified.
+Use `React.memo` for memoizing components in lists.
+Use `useMemo` for expensive calculations.

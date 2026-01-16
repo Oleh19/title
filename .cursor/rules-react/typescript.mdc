@@ -1,0 +1,29 @@
+---
+description: TypeScript typing rules and DTO/Domain patterns
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
+Require TypeScript strict mode.
+No exceptions for noImplicitAny unless explicitly justified.
+Distinguish DTO (types for API) and Domain (domain types).
+dto/ types are located next to adapters.
+model/ types are canonical domain types.
+Convert DTO → Domain only in adapter/service layer.
+Use readonly, as const, branded types where semantic difference is important.
+When using any, add `// TODO: justify use of any` and annotate the risk.
+
+Automatically create and maintain `index.ts` files in each folder with exportable modules (components, hooks, utilities).
+Update barrel files when adding, removing, or renaming files in feature folders.
+Include only files with exports (skip tests, stories, mocks).
+Use named exports everywhere possible.
+For default exports use syntax: `export { default as ComponentName } from "./ComponentName"`.
+For type-only files use: `export type { MyType } from "./types"`.
+Skip files: `.test.ts`, `.spec.ts`, `.stories.tsx`, `.mock.ts`, `index.ts/tsx`.
+Never use `export *` if module contains side-effects.
+Always maintain alphabetical order of exports.
+Generate relative paths without extensions: `"./MyComponent"`.
+Create aggregating `index.ts` for feature folders that re-export from subfolders (ui, hooks, api, model).
+Maintain one barrel file per folder boundary.
+Do not create global barrel files in project root.
+Consider TypeScript path aliases when generating paths.
