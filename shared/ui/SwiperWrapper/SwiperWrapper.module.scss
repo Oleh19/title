@@ -1,0 +1,29 @@
+.swiperContainer {
+  position: relative;
+}
+
+.labelsWrapper {
+  position: absolute;
+  top: calc(-1 * var(--height-month-label));
+  height: var(--height-month-label);
+  overflow-x: hidden;
+  overflow-y: visible;
+  pointer-events: none;
+  z-index: var(--z-index-elevated);
+}
+
+.label {
+  position: absolute;
+  top: 0;
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--info-description-color);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: var(--z-index-elevated);
+}
+
+.labelFixed {
+  /* Fixed label styles can be added here if needed */
+}
