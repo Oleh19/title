@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type { Swiper as SwiperType } from 'swiper';
 import { getMonthKey, formatMonthShort } from './dateUtils';
 import { isSlideVisible, checkSlideVisibility, getElementPosition } from './swiperUtils';

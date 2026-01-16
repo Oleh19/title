@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useId, useRef, useState } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Navigation } from 'swiper/modules';
 import { ArrowLeft, ArrowRight } from '../icons';
 import styles from './HorizontalSwiper.module.scss';
@@ -15,7 +13,6 @@ type HorizontalSwiperProps = {
   onSelect?: (index: number) => void;
   onSwiperReady?: (swiper: SwiperType) => void;
 };
-
 function HorizontalSwiper({
   children,
   onSlideChange,

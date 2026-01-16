@@ -2,7 +2,6 @@
 
 import React, { useRef, useState } from 'react';
 import { Kaisei_Tokumin } from 'next/font/google';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type { Swiper as SwiperType } from 'swiper';
 import HorizontalSwiper from '../../shared/ui/HorizontalSwiper';
 import generateDateRange, {

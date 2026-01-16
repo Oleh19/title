@@ -1,7 +1,6 @@
 import {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type { Swiper as SwiperType } from 'swiper';
 import { getFirstDayIndices, getLastDayIndices } from '../lib/dateIndices';
 import {

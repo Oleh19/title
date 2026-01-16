@@ -1,17 +1,10 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type { Swiper as SwiperType } from 'swiper';
 
-/**
- * Проверяет, видим ли слайд в области свайпера
- */
 export const isSlideVisible = (
   slideRect: DOMRect,
   swiperRect: DOMRect,
 ): boolean => slideRect.left >= swiperRect.left && slideRect.left < swiperRect.right;
 
-/**
- * Проверяет видимость слайда через visibleSlides или позицию
- */
 export const checkSlideVisibility = (
   dayIndex: number,
   slideRect: DOMRect,
@@ -27,9 +20,6 @@ export const checkSlideVisibility = (
   return isInVisibleSlides || isSlideVisible(slideRect, swiperRect);
 };
 
-/**
- * Получает позицию элемента относительно свайпера
- */
 export const getElementPosition = (
   dayIndex: number,
   swiperRect: DOMRect,
