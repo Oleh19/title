@@ -12,6 +12,10 @@ function Home() {
         daysSlidesPerGroup={1}
         timeSlidesPerView={5}
         timeSlidesPerGroup={1}
+        mobileDaysSlidesPerView={5}
+        mobileDaysSlidesPerGroup={1}
+        mobileTimeSlidesPerView={4}
+        mobileTimeSlidesPerGroup={1}
       />
     </main>
   );

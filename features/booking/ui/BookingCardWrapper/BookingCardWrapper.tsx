@@ -12,6 +12,10 @@ type BookingCardWrapperProps = {
   daysSlidesPerGroup?: number;
   timeSlidesPerView: number | 'auto';
   timeSlidesPerGroup?: number;
+  mobileDaysSlidesPerView?: number | 'auto';
+  mobileDaysSlidesPerGroup?: number;
+  mobileTimeSlidesPerView?: number | 'auto';
+  mobileTimeSlidesPerGroup?: number;
 };
 
 function BookingCardWrapper({
@@ -21,6 +25,10 @@ function BookingCardWrapper({
   daysSlidesPerGroup,
   timeSlidesPerView,
   timeSlidesPerGroup,
+  mobileDaysSlidesPerView,
+  mobileDaysSlidesPerGroup,
+  mobileTimeSlidesPerView,
+  mobileTimeSlidesPerGroup,
 }: BookingCardWrapperProps) {
   const isMobile = useBreakpoint('mobile', { defaultValue: false });
 
@@ -29,10 +37,10 @@ function BookingCardWrapper({
       <BookingCardMobile
         title={title}
         text={text}
-        daysSlidesPerView={daysSlidesPerView}
-        daysSlidesPerGroup={daysSlidesPerGroup}
-        timeSlidesPerView={timeSlidesPerView}
-        timeSlidesPerGroup={timeSlidesPerGroup}
+        daysSlidesPerView={mobileDaysSlidesPerView ?? daysSlidesPerView}
+        daysSlidesPerGroup={mobileDaysSlidesPerGroup ?? daysSlidesPerGroup}
+        timeSlidesPerView={mobileTimeSlidesPerView ?? timeSlidesPerView}
+        timeSlidesPerGroup={mobileTimeSlidesPerGroup ?? timeSlidesPerGroup}
       />
     );
   }
@@ -52,6 +60,10 @@ function BookingCardWrapper({
 BookingCardWrapper.defaultProps = {
   daysSlidesPerGroup: undefined,
   timeSlidesPerGroup: undefined,
+  mobileDaysSlidesPerView: undefined,
+  mobileDaysSlidesPerGroup: undefined,
+  mobileTimeSlidesPerView: undefined,
+  mobileTimeSlidesPerGroup: undefined,
 };
 
 export default BookingCardWrapper;
