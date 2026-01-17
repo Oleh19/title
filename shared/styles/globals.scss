@@ -43,6 +43,7 @@
   /* Border Radius */
   --radius-sm: 8px;
   --radius-md: 16px;
+  --radius-lg: 24px;
   --radius-full: 50%;
   --radius-pill: 100px;
 
@@ -51,6 +52,9 @@
   --z-index-elevated: 1;
   --z-index-sticky: 2;
   --z-index-overlay: 10;
+
+  /* Breakpoints */
+  --breakpoint-mobile-min: 601px;
 
   /* Component Sizes */
   --size-icon: 24px;
@@ -61,6 +65,7 @@
   --height-header: 80px;
   --height-month-label: 28px;
   --height-card: 620px;
+  --height-mobile-card: 63.9vh;
 
   /* Effects */
   --blur-backdrop: 20px;

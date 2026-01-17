@@ -1,7 +1,13 @@
 .page {
   display: flex;
-  min-height: calc(100vh - var(--height-header));
+  min-height: auto;
   justify-content: center;
   padding-block: var(--spacing-2xl);
-  padding-inline: var(--spacing-4xl);
+}
+
+@media (min-width: var(--breakpoint-mobile-min)) {
+  .page {
+    min-height: calc(100vh - var(--height-header));
+    padding-inline: var(--spacing-4xl);
+  }
 }
