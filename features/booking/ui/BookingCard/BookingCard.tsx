@@ -1,7 +1,7 @@
 'use client';
 
 import React, {
-  useCallback, useMemo, useRef, useState,
+  useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { Kaisei_Tokumin } from 'next/font/google';
 import type { Swiper as SwiperType } from 'swiper';
@@ -26,9 +26,16 @@ const WEEKS_TO_GENERATE = 6;
 
 function BookingCard() {
   const dates = useMemo(() => generateDateRange(new Date(), WEEKS_TO_GENERATE), []);
-  const timeSlots = useMemo(() => generateTimeSlots(), []);
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
   const [selectedTimeIndex, setSelectedTimeIndex] = useState<number | undefined>(undefined);
+  const selectedDate = useMemo(
+    () => (selectedIndex !== undefined ? dates[selectedIndex] : undefined),
+    [selectedIndex, dates],
+  );
+  const timeSlots = useMemo(
+    () => (selectedDate ? generateTimeSlots(selectedDate) : []),
+    [selectedDate],
+  );
   const [isDaysSwiperEnd, setIsDaysSwiperEnd] = useState(false);
   const [isDaysSwiperBeginning, setIsDaysSwiperBeginning] = useState(true);
   const [isTimeSwiperEnd, setIsTimeSwiperEnd] = useState(false);
@@ -57,8 +64,15 @@ function BookingCard() {
   }, []);
 
   const handleSelect = useCallback((index: number) => {
-    setSelectedIndex((prevIndex) => (prevIndex === index ? undefined : index));
+    setSelectedIndex((prevIndex) => {
+      const newIndex = prevIndex === index ? undefined : index;
+      return newIndex;
+    });
   }, []);
+
+  useEffect(() => {
+    setSelectedTimeIndex(undefined);
+  }, [selectedIndex]);
 
   const handleDaysSwiperReachEnd = useCallback((isEnd: boolean) => {
     setIsDaysSwiperEnd(isEnd);
@@ -164,32 +178,47 @@ function BookingCard() {
           </HorizontalSwiper>
         </div>
       </section>
-      <section className={`${styles.timeBlock} ${isTimeSwiperEnd ? styles.timeBlockEnd : ''} ${isTimeSwiperBeginning ? styles.timeBlockBeginning : ''}`}>
-        <HorizontalSwiper
-          onSelect={handleTimeSelect}
-          onReachEnd={handleTimeSwiperReachEnd}
-          onReachBeginning={handleTimeSwiperReachBeginning}
-          slidesPerView={5}
-          slidesPerGroup={1}
-        >
-          {timeSlots.map((time, index) => {
-            const isSelected = selectedTimeIndex === index;
+      {selectedDate && (
+        <section className={`${styles.timeBlock} ${isTimeSwiperEnd ? styles.timeBlockEnd : ''} ${isTimeSwiperBeginning ? styles.timeBlockBeginning : ''}`}>
+          <HorizontalSwiper
+            onSelect={handleTimeSelect}
+            onReachEnd={handleTimeSwiperReachEnd}
+            onReachBeginning={handleTimeSwiperReachBeginning}
+            slidesPerView={5}
+            slidesPerGroup={1}
+          >
+            {timeSlots.map((slot, index) => {
+              const isSelected = selectedTimeIndex === index;
 
-            return (
-              <button
-                className={`${styles.timeChip} ${isSelected ? styles.timeChipSelected : ''}`}
-                type="button"
-                key={time}
-              >
-                {time}
-              </button>
-            );
-          })}
-        </HorizontalSwiper>
-      </section>
+              return (
+                <button
+                  className={`${styles.timeChip} ${isSelected ? styles.timeChipSelected : ''}`}
+                  type="button"
+                  key={`${slot.date.getTime()}`}
+                >
+                  {slot.time}
+                </button>
+              );
+            })}
+          </HorizontalSwiper>
+        </section>
+      )}
 
       <div className={styles.buttonWrapper}>
-        <Button width={370}>Confirm</Button>
+        <Button
+          width={370}
+          disabled={selectedIndex === undefined || selectedTimeIndex === undefined}
+          onClick={() => {
+            if (selectedIndex !== undefined && selectedTimeIndex !== undefined) {
+              const selectedTimeSlot = timeSlots[selectedTimeIndex];
+              const timestamp = selectedTimeSlot.date.getTime();
+              // eslint-disable-next-line no-console
+              console.log(timestamp);
+            }
+          }}
+        >
+          Confirm
+        </Button>
       </div>
     </section>
   );
