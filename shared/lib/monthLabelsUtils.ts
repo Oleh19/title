@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type { Swiper as SwiperType } from 'swiper';
 import type { RefObject } from 'react';
 import { getMonthKey, formatMonthShort } from './dateUtils';
@@ -207,4 +206,22 @@ export const shouldUnfixMonth = (
   const currentPosition = currentRect.left - swiperRect.left;
 
   return currentPosition > 0;
+};
+
+export const updateLabelPositions = (
+  monthLabels: MonthLabel[],
+  swiperRect: DOMRect,
+  monthLabelRefs: RefObject<Map<number, HTMLDivElement>>,
+  dayRefs: RefObject<Map<number, HTMLButtonElement>>,
+  swiper: SwiperType,
+): void => {
+  monthLabels.forEach((label) => {
+    const labelElement = monthLabelRefs.current?.get(label.dayIndex);
+    if (labelElement) {
+      const position = label.isFixed
+        ? 0
+        : getElementPosition(label.dayIndex, swiperRect, dayRefs, swiper);
+      labelElement.style.left = `${position}px`;
+    }
+  });
 };
