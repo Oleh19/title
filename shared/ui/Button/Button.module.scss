@@ -1,0 +1,21 @@
+.button {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s, cursor 0.2s;
+}
+
+.buttonPrimary {
+  padding: 18px;
+  background: var(--color-text-default);
+  color: var(--color-white);
+  border-radius: 100px;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  width: 100%;
+}
+
+.buttonPrimary:disabled {
+  background: var(--color-button-disabled);
+  cursor: not-allowed;
+}

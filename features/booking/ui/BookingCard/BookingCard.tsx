@@ -9,6 +9,7 @@ import {
   HorizontalSwiper,
   formatWeekdayShort,
   formatDay2Digit,
+  Button,
 } from '../../../../shared';
 import generateDateRange from '../../lib/dateRangeUtils';
 import generateTimeSlots from '../../lib/timeRangeUtils';
@@ -186,6 +187,10 @@ function BookingCard() {
           })}
         </HorizontalSwiper>
       </section>
+
+      <div className={styles.buttonWrapper}>
+        <Button width={370}>Confirm</Button>
+      </div>
     </section>
   );
 }
