@@ -1,12 +1,10 @@
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+import { addDays, startOfDay } from 'date-fns';
 
 const generateDateRange = (startDate: Date, weeks: number): Date[] => {
-  const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+  const start = startOfDay(startDate);
   const totalDays = weeks * 7;
 
-  return Array.from({ length: totalDays + 1 }, (_, index) => (
-    new Date(start.getTime() + index * MILLISECONDS_PER_DAY)
-  ));
+  return Array.from({ length: totalDays + 1 }, (_, index) => addDays(start, index));
 };
 
 export default generateDateRange;

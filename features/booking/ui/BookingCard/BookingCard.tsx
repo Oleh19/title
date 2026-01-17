@@ -7,8 +7,9 @@ import { Kaisei_Tokumin } from 'next/font/google';
 import type { Swiper as SwiperType } from 'swiper';
 import {
   HorizontalSwiper,
-  formatWeekdayShort,
+  formatDateKey,
   formatDay2Digit,
+  formatWeekdayShort,
   Button,
 } from '../../../../shared';
 import generateDateRange from '../../lib/dateRangeUtils';
@@ -155,7 +156,7 @@ function BookingCard() {
             slidesPerView={6}
           >
             {dates.map((date, index) => {
-              const dateKey = date.toISOString();
+              const dateKey = formatDateKey(date);
               const isSelected = selectedIndex === index;
 
               return (
@@ -189,12 +190,14 @@ function BookingCard() {
           >
             {timeSlots.map((slot, index) => {
               const isSelected = selectedTimeIndex === index;
+              const isPast = slot.date.getTime() <= Date.now();
 
               return (
                 <button
                   className={`${styles.timeChip} ${isSelected ? styles.timeChipSelected : ''}`}
                   type="button"
                   key={`${slot.date.getTime()}`}
+                  disabled={isPast}
                 >
                   {slot.time}
                 </button>
@@ -207,7 +210,12 @@ function BookingCard() {
       <div className={styles.buttonWrapper}>
         <Button
           width={370}
-          disabled={selectedIndex === undefined || selectedTimeIndex === undefined}
+          disabled={
+            selectedIndex === undefined
+            || selectedTimeIndex === undefined
+            || (selectedTimeIndex !== undefined
+              && (timeSlots[selectedTimeIndex]?.date.getTime() ?? 0) <= Date.now())
+          }
           onClick={() => {
             if (selectedIndex !== undefined && selectedTimeIndex !== undefined) {
               const selectedTimeSlot = timeSlots[selectedTimeIndex];

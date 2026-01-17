@@ -138,6 +138,7 @@
 .dayChipSelected {
   background: var(--day-chip-selected-bg);
   border: var(--border-width) solid transparent;
+  color: var(--color-selected);
 }
 
 .dayWeek,
@@ -187,4 +188,11 @@
 .timeChipSelected {
   background: var(--day-chip-selected-bg);
   border: var(--border-width) solid transparent;
+  color: var(--color-selected);
+}
+
+.timeChip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--info-description-color);
 }
