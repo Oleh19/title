@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight } from '../icons';
-import styles from './SwiperNavigation.module.scss';
+import styles from './SwiperNavButton.module.scss';
 
 type SwiperNavButtonProps = {
   direction: 'prev' | 'next';

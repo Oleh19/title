@@ -5,7 +5,7 @@ import React, {
 } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
-import SwiperNavButton from '../SwiperNavigation/SwiperNavButton';
+import SwiperNavButton from '../SwiperNavButton/SwiperNavButton';
 import styles from './HorizontalSwiper.module.scss';
 
 const SPACE_BETWEEN_SLIDES = 8;
