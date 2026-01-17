@@ -25,7 +25,23 @@ const kaiseiTokumin = Kaisei_Tokumin({
 
 const WEEKS_TO_GENERATE = 6;
 
-function BookingCard() {
+type BookingCardProps = {
+  title: string;
+  text: string;
+  daysSlidesPerView: number | 'auto';
+  daysSlidesPerGroup?: number;
+  timeSlidesPerView: number | 'auto';
+  timeSlidesPerGroup?: number;
+};
+
+function BookingCard({
+  title,
+  text,
+  daysSlidesPerView,
+  daysSlidesPerGroup,
+  timeSlidesPerView,
+  timeSlidesPerGroup,
+}: BookingCardProps) {
   const dates = useMemo(() => generateDateRange(new Date(), WEEKS_TO_GENERATE), []);
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
   const [selectedTimeIndex, setSelectedTimeIndex] = useState<number | undefined>(undefined);
@@ -118,11 +134,10 @@ function BookingCard() {
         />
         <div className={styles.infoText}>
           <h2 className={`${styles.infoTitle} ${kaiseiTokumin.className}`}>
-            Book a Session
+            {title}
           </h2>
           <p className={styles.infoDescription}>
-            Choose a date and time that is convenient for you to e-meet your
-            stylist
+            {text}
           </p>
         </div>
       </div>
@@ -153,7 +168,8 @@ function BookingCard() {
             onSwiperReady={handleSwiperReady}
             onReachEnd={handleDaysSwiperReachEnd}
             onReachBeginning={handleDaysSwiperReachBeginning}
-            slidesPerView={6}
+            slidesPerView={daysSlidesPerView}
+            slidesPerGroup={daysSlidesPerGroup}
           >
             {dates.map((date, index) => {
               const dateKey = formatDateKey(date);
@@ -185,8 +201,8 @@ function BookingCard() {
             onSelect={handleTimeSelect}
             onReachEnd={handleTimeSwiperReachEnd}
             onReachBeginning={handleTimeSwiperReachBeginning}
-            slidesPerView={5}
-            slidesPerGroup={1}
+            slidesPerView={timeSlidesPerView}
+            slidesPerGroup={timeSlidesPerGroup}
           >
             {timeSlots.map((slot, index) => {
               const isSelected = selectedTimeIndex === index;
@@ -231,5 +247,10 @@ function BookingCard() {
     </section>
   );
 }
+
+BookingCard.defaultProps = {
+  daysSlidesPerGroup: undefined,
+  timeSlidesPerGroup: undefined,
+};
 
 export default BookingCard;
