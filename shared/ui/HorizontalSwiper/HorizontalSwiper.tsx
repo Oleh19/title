@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useId, useRef, useState } from 'react';
+import React, { Children, isValidElement, useId, useRef, useState, type ReactNode } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Navigation } from 'swiper/modules';
@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRight } from '../icons';
 import styles from './HorizontalSwiper.module.scss';
 
 type HorizontalSwiperProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   onSlideChange?: () => void;
   onSelect?: (index: number) => void;
   onSwiperReady?: (swiper: SwiperType) => void;
@@ -20,7 +20,7 @@ function HorizontalSwiper({
   onSwiperReady,
 }: HorizontalSwiperProps) {
   const baseId = useId();
-  const childrenArray = React.Children.toArray(children);
+  const childrenArray = Children.toArray(children);
   const swiperRef = useRef<SwiperType | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -67,7 +67,7 @@ function HorizontalSwiper({
         className={styles.swiper}
       >
         {childrenArray.map((child, index) => {
-          const key = React.isValidElement(child) && child.key
+          const key = isValidElement(child) && child.key
             ? child.key
             : `${baseId}-slide-${index}`;
           return (

@@ -1,4 +1,5 @@
 import type { Swiper as SwiperType } from 'swiper';
+import type { RefObject } from 'react';
 
 export const isSlideVisible = (
   slideRect: DOMRect,
@@ -23,7 +24,7 @@ export const checkSlideVisibility = (
 export const getElementPosition = (
   dayIndex: number,
   swiperRect: DOMRect,
-  dayRefs: React.RefObject<Map<number, HTMLButtonElement>>,
+  dayRefs: RefObject<Map<number, HTMLButtonElement>>,
   swiper: SwiperType | null,
 ): number => {
   const dayElement = dayRefs.current?.get(dayIndex);

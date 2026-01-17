@@ -1,5 +1,6 @@
 import {
   useCallback, useEffect, useMemo, useState,
+  type RefObject,
 } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 import { getFirstDayIndices, getLastDayIndices } from '../lib/dateIndices';
@@ -24,11 +25,11 @@ export type MonthLabel = {
 
 type UseMonthLabelsParams = {
   dates: Date[];
-  dayRefs: React.RefObject<Map<number, HTMLButtonElement>>;
-  swiperContainerRef: React.RefObject<HTMLDivElement | null>;
-  swiperInstanceRef: React.RefObject<SwiperType | null>;
-  monthLabelsWrapperRef: React.RefObject<HTMLDivElement | null>;
-  monthLabelRefs: React.RefObject<Map<number, HTMLDivElement>>;
+  dayRefs: RefObject<Map<number, HTMLButtonElement>>;
+  swiperContainerRef: RefObject<HTMLDivElement | null>;
+  swiperInstanceRef: RefObject<SwiperType | null>;
+  monthLabelsWrapperRef: RefObject<HTMLDivElement | null>;
+  monthLabelRefs: RefObject<Map<number, HTMLDivElement>>;
 };
 
 export const useMonthLabels = ({

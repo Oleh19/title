@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, type ReactNode } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 import HorizontalSwiper from '../HorizontalSwiper';
 import { useMonthLabels, type MonthLabel } from '../../hooks/useMonthLabels';
@@ -8,9 +8,9 @@ import styles from './SwiperWrapper.module.scss';
 
 type SwiperWrapperProps = {
   dates: Date[];
-  renderDay: (date: Date, index: number, ref: (el: HTMLElement | null) => void) => React.ReactNode;
+  renderDay: (date: Date, index: number, ref: (el: HTMLElement | null) => void) => ReactNode;
   onSelect?: (index: number) => void;
-  renderLabel?: (label: MonthLabel) => React.ReactNode;
+  renderLabel?: (label: MonthLabel) => ReactNode;
 };
 
 function SwiperWrapper({

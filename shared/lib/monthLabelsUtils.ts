@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import type { Swiper as SwiperType } from 'swiper';
+import type { RefObject } from 'react';
 import { getMonthKey, formatMonthShort } from './dateUtils';
 import { isSlideVisible, checkSlideVisibility, getElementPosition } from './swiperUtils';
 import type { MonthLabel } from '../hooks/useMonthLabels';
@@ -175,7 +177,7 @@ export const createMonthLabels = (
   firstDayIndices: number[],
   dates: Date[],
   swiperRect: DOMRect,
-  dayRefs: React.RefObject<Map<number, HTMLButtonElement>>,
+  dayRefs: RefObject<Map<number, HTMLButtonElement>>,
   swiper: SwiperType,
   newFixedIndex: number | null,
 ): MonthLabel[] => firstDayIndices.map((dayIndex) => {
@@ -205,22 +207,4 @@ export const shouldUnfixMonth = (
   const currentPosition = currentRect.left - swiperRect.left;
 
   return currentPosition > 0;
-};
-
-export const updateLabelPositions = (
-  monthLabels: MonthLabel[],
-  swiperRect: DOMRect,
-  monthLabelRefs: React.RefObject<Map<number, HTMLDivElement>>,
-  dayRefs: React.RefObject<Map<number, HTMLButtonElement>>,
-  swiper: SwiperType,
-): void => {
-  monthLabels.forEach(({ dayIndex, isFixed }) => {
-    if (isFixed) return;
-
-    const labelElement = monthLabelRefs.current?.get(dayIndex);
-    if (!labelElement) return;
-
-    const position = getElementPosition(dayIndex, swiperRect, dayRefs, swiper);
-    labelElement.style.left = `${position}px`;
-  });
 };
