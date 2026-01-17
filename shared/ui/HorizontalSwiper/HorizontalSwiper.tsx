@@ -8,9 +8,6 @@ import type { Swiper as SwiperType } from 'swiper';
 import SwiperNavButton from '../SwiperNavButton/SwiperNavButton';
 import styles from './HorizontalSwiper.module.scss';
 
-const SPACE_BETWEEN_SLIDES = 8;
-const SLIDES_PER_GROUP = 1;
-
 const getSlideKey = (child: unknown, baseId: string, index: number): string | number => (
   isValidElement(child) && child.key
     ? child.key
@@ -22,12 +19,22 @@ type HorizontalSwiperProps = {
   onSlideChange?: () => void;
   onSelect?: (index: number) => void;
   onSwiperReady?: (swiper: SwiperType) => void;
+  onReachEnd?: (isEnd: boolean) => void;
+  onReachBeginning?: (isBeginning: boolean) => void;
+  slidesPerView?: number | 'auto';
+  slidesPerGroup?: number;
+  spaceBetween?: number;
 };
 function HorizontalSwiper({
   children,
   onSlideChange,
   onSelect,
   onSwiperReady,
+  onReachEnd,
+  onReachBeginning,
+  slidesPerView = 'auto',
+  slidesPerGroup = 1,
+  spaceBetween = 8,
 }: HorizontalSwiperProps) {
   const baseId = useId();
   const childrenArray = Children.toArray(children);
@@ -47,7 +54,9 @@ function HorizontalSwiper({
     setCanScrollLeft(!swiper.isBeginning);
     setCanScrollRight(!swiper.isEnd);
     onSlideChange?.();
-  }, [onSlideChange]);
+    onReachEnd?.(swiper.isEnd);
+    onReachBeginning?.(swiper.isBeginning);
+  }, [onSlideChange, onReachEnd, onReachBeginning]);
 
   const handleSwiperReady = useCallback((swiper: SwiperType) => {
     swiperRef.current = swiper;
@@ -71,9 +80,9 @@ function HorizontalSwiper({
         disabled={!canScrollLeft}
       />
       <Swiper
-        spaceBetween={SPACE_BETWEEN_SLIDES}
-        slidesPerView="auto"
-        slidesPerGroup={SLIDES_PER_GROUP}
+        spaceBetween={spaceBetween}
+        slidesPerView={slidesPerView}
+        slidesPerGroup={slidesPerGroup}
         onSwiper={handleSwiperReady}
         onSlideChange={handleSlideChange}
         onSlideChangeTransitionEnd={handleSlideChange}
@@ -102,6 +111,11 @@ HorizontalSwiper.defaultProps = {
   onSlideChange: undefined,
   onSelect: undefined,
   onSwiperReady: undefined,
+  onReachEnd: undefined,
+  onReachBeginning: undefined,
+  slidesPerView: 'auto',
+  slidesPerGroup: 1,
+  spaceBetween: 8,
 };
 
 export default HorizontalSwiper;

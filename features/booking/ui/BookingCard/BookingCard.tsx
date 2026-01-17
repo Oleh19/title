@@ -11,6 +11,7 @@ import {
   formatDay2Digit,
 } from '../../../../shared';
 import generateDateRange from '../../lib/dateRangeUtils';
+import generateTimeSlots from '../../lib/timeRangeUtils';
 import { useMonthLabels } from '../../model/useMonthLabels';
 import styles from './BookingCard.module.scss';
 
@@ -24,7 +25,13 @@ const WEEKS_TO_GENERATE = 6;
 
 function BookingCard() {
   const dates = useMemo(() => generateDateRange(new Date(), WEEKS_TO_GENERATE), []);
+  const timeSlots = useMemo(() => generateTimeSlots(), []);
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
+  const [selectedTimeIndex, setSelectedTimeIndex] = useState<number | undefined>(undefined);
+  const [isDaysSwiperEnd, setIsDaysSwiperEnd] = useState(false);
+  const [isDaysSwiperBeginning, setIsDaysSwiperBeginning] = useState(true);
+  const [isTimeSwiperEnd, setIsTimeSwiperEnd] = useState(false);
+  const [isTimeSwiperBeginning, setIsTimeSwiperBeginning] = useState(true);
   const dayRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
   const monthLabelRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const swiperContainerRef = useRef<HTMLDivElement>(null);
@@ -50,6 +57,26 @@ function BookingCard() {
 
   const handleSelect = useCallback((index: number) => {
     setSelectedIndex((prevIndex) => (prevIndex === index ? undefined : index));
+  }, []);
+
+  const handleDaysSwiperReachEnd = useCallback((isEnd: boolean) => {
+    setIsDaysSwiperEnd(isEnd);
+  }, []);
+
+  const handleDaysSwiperReachBeginning = useCallback((isBeginning: boolean) => {
+    setIsDaysSwiperBeginning(isBeginning);
+  }, []);
+
+  const handleTimeSelect = useCallback((index: number) => {
+    setSelectedTimeIndex((prevIndex) => (prevIndex === index ? undefined : index));
+  }, []);
+
+  const handleTimeSwiperReachEnd = useCallback((isEnd: boolean) => {
+    setIsTimeSwiperEnd(isEnd);
+  }, []);
+
+  const handleTimeSwiperReachBeginning = useCallback((isBeginning: boolean) => {
+    setIsTimeSwiperBeginning(isBeginning);
   }, []);
 
   const handleSwiperReady = useCallback((swiper: SwiperType) => {
@@ -83,7 +110,7 @@ function BookingCard() {
           </p>
         </div>
       </div>
-      <section className={styles.daysBlock}>
+      <section className={`${styles.daysBlock} ${isDaysSwiperEnd ? styles.daysBlockEnd : ''} ${isDaysSwiperBeginning ? styles.daysBlockBeginning : ''}`}>
         <div ref={swiperContainerRef} className={styles.swiperContainer}>
           <div ref={monthLabelsWrapperRef} className={styles.monthLabelsWrapper}>
             {monthLabels.map(({
@@ -108,6 +135,9 @@ function BookingCard() {
             onSelect={handleSelect}
             onSlideChange={updateMonthLabels}
             onSwiperReady={handleSwiperReady}
+            onReachEnd={handleDaysSwiperReachEnd}
+            onReachBeginning={handleDaysSwiperReachBeginning}
+            slidesPerView={6}
           >
             {dates.map((date, index) => {
               const dateKey = date.toISOString();
@@ -132,6 +162,29 @@ function BookingCard() {
             })}
           </HorizontalSwiper>
         </div>
+      </section>
+      <section className={`${styles.timeBlock} ${isTimeSwiperEnd ? styles.timeBlockEnd : ''} ${isTimeSwiperBeginning ? styles.timeBlockBeginning : ''}`}>
+        <HorizontalSwiper
+          onSelect={handleTimeSelect}
+          onReachEnd={handleTimeSwiperReachEnd}
+          onReachBeginning={handleTimeSwiperReachBeginning}
+          slidesPerView={5}
+          slidesPerGroup={1}
+        >
+          {timeSlots.map((time, index) => {
+            const isSelected = selectedTimeIndex === index;
+
+            return (
+              <button
+                className={`${styles.timeChip} ${isSelected ? styles.timeChipSelected : ''}`}
+                type="button"
+                key={time}
+              >
+                {time}
+              </button>
+            );
+          })}
+        </HorizontalSwiper>
       </section>
     </section>
   );

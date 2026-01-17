@@ -42,21 +42,28 @@
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-full: 50%;
+  --radius-pill: 100px;
 
   /* Z-index */
   --z-index-base: 0;
   --z-index-elevated: 1;
   --z-index-sticky: 2;
+  --z-index-overlay: 10;
 
   /* Component Sizes */
   --size-icon: 24px;
   --size-day-chip: 64px;
+  --size-time-chip-width:100%;
+  --size-time-chip-height: 45px;
   --size-avatar: 120px;
   --height-header: 80px;
   --height-month-label: 28px;
 
   /* Effects */
   --blur-backdrop: 20px;
+  --gradient-overlay-width: 80px;
+  --gradient-overlay-offset: 48px;
+  --gradient-overlay-opacity: 0.9;
 
   /* Layout */
   --shadow-card: 0 20px 52px 0 #00000040;
