@@ -5,8 +5,7 @@ import React, {
 } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
-import { Navigation } from 'swiper/modules';
-import { ArrowLeft, ArrowRight } from '../icons';
+import SwiperNavButton from '../SwiperNavigation/SwiperNavButton';
 import styles from './HorizontalSwiper.module.scss';
 
 const SPACE_BETWEEN_SLIDES = 8;
@@ -66,19 +65,14 @@ function HorizontalSwiper({
 
   return (
     <div className={styles.wrapper}>
-      <button
-        className={styles.button}
-        type="button"
-        aria-label="Scroll left"
+      <SwiperNavButton
+        direction="prev"
         onClick={handleSlidePrev}
         disabled={!canScrollLeft}
-      >
-        <ArrowLeft />
-      </button>
+      />
       <Swiper
-        modules={[Navigation]}
         spaceBetween={SPACE_BETWEEN_SLIDES}
-        slidesPerView={6}
+        slidesPerView="auto"
         slidesPerGroup={SLIDES_PER_GROUP}
         onSwiper={handleSwiperReady}
         onSlideChange={handleSlideChange}
@@ -95,15 +89,11 @@ function HorizontalSwiper({
           </SwiperSlide>
         ))}
       </Swiper>
-      <button
-        className={styles.button}
-        type="button"
-        aria-label="Scroll right"
+      <SwiperNavButton
+        direction="next"
         onClick={handleSlideNext}
         disabled={!canScrollRight}
-      >
-        <ArrowRight />
-      </button>
+      />
     </div>
   );
 }
