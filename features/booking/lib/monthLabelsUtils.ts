@@ -1,12 +1,20 @@
 import type { Swiper as SwiperType } from 'swiper';
 import type { RefObject } from 'react';
-import { getMonthKey, formatMonthShort } from './dateUtils';
-import { isSlideVisible, checkSlideVisibility, getElementPosition } from './swiperUtils';
-import type { MonthLabel } from '../hooks/useMonthLabels';
+import {
+  getMonthKey,
+  formatMonthShort,
+  isSlideVisible,
+  checkSlideVisibility,
+  getElementPosition,
+} from '../../../shared';
+import type { MonthLabel } from '../model/useMonthLabels';
 
 const getSlideRect = (slide: Element): DOMRect => {
-  const slideEl = slide as HTMLElement;
-  return slideEl.getBoundingClientRect();
+  if (!(slide instanceof HTMLElement)) {
+    const emptyRect = new DOMRect(0, 0, 0, 0);
+    return emptyRect;
+  }
+  return slide.getBoundingClientRect();
 };
 
 export const findLeftmostVisibleDay = (
@@ -14,79 +22,83 @@ export const findLeftmostVisibleDay = (
   swiperRect: DOMRect,
   dates: Date[],
 ): { dayIndex: number; monthKey: number } | null => {
-  let leftmost: { dayIndex: number; monthKey: number } | null = null;
-  let leftmostPosition = Infinity;
+  const result = dates.reduce<{ dayIndex: number; monthKey: number; position: number } | null>(
+    (leftmost, date, index) => {
+      const slide = swiper.slides[index];
+      if (!slide) return leftmost;
 
-  for (let i = 0; i < dates.length; i += 1) {
-    const slide = swiper.slides[i];
-    if (slide) {
       const slideRect = getSlideRect(slide);
       const position = slideRect.left - swiperRect.left;
 
-      if (isSlideVisible(slideRect, swiperRect) && position < leftmostPosition) {
-        leftmostPosition = position;
-        leftmost = {
-          dayIndex: i,
-          monthKey: getMonthKey(dates[i]),
+      if (isSlideVisible(slideRect, swiperRect) && (!leftmost || position < leftmost.position)) {
+        return {
+          dayIndex: index,
+          monthKey: getMonthKey(date),
+          position,
         };
       }
-    }
-  }
 
-  return leftmost;
+      return leftmost;
+    },
+    null,
+  );
+
+  return result ? { dayIndex: result.dayIndex, monthKey: result.monthKey } : null;
 };
 
 export const findLeftmostFirstDay = (
   swiper: SwiperType,
   swiperRect: DOMRect,
-  visibleSlides: any[],
+  visibleSlides: unknown[],
   firstDayIndices: number[],
-): { dayIndex: number; position: number } | null => {
-  let leftmost: { dayIndex: number; position: number } | null = null;
-
-  firstDayIndices.forEach((dayIndex) => {
+): { dayIndex: number; position: number } | null => firstDayIndices.reduce<
+{ dayIndex: number; position: number } | null
+>(
+  (leftmost, dayIndex) => {
     const slide = swiper.slides[dayIndex];
-    if (slide) {
-      const slideRect = getSlideRect(slide);
-      const position = slideRect.left - swiperRect.left;
+    if (!slide) return leftmost;
 
-      if (checkSlideVisibility(dayIndex, slideRect, swiperRect, visibleSlides)) {
-        if (!leftmost || position < leftmost.position) {
-          leftmost = { dayIndex, position };
-        }
+    const slideRect = getSlideRect(slide);
+    const position = slideRect.left - swiperRect.left;
+
+    if (checkSlideVisibility(dayIndex, slideRect, swiperRect, visibleSlides)) {
+      if (!leftmost || position < leftmost.position) {
+        return { dayIndex, position };
       }
     }
-  });
 
-  return leftmost;
-};
+    return leftmost;
+  },
+  null,
+);
 
 export const findLeftmostLastDay = (
   swiper: SwiperType,
   swiperRect: DOMRect,
-  visibleSlides: any[],
+  visibleSlides: unknown[],
   lastDayIndices: number[],
   dates: Date[],
-): { dayIndex: number; position: number; monthKey: number } | null => {
-  let leftmost: { dayIndex: number; position: number; monthKey: number } | null = null;
-
-  lastDayIndices.forEach((dayIndex) => {
+): { dayIndex: number; position: number; monthKey: number } | null => lastDayIndices.reduce<
+{ dayIndex: number; position: number; monthKey: number } | null
+>(
+  (leftmost, dayIndex) => {
     const slide = swiper.slides[dayIndex];
-    if (slide) {
-      const slideRect = getSlideRect(slide);
-      const position = slideRect.left - swiperRect.left;
+    if (!slide) return leftmost;
 
-      if (checkSlideVisibility(dayIndex, slideRect, swiperRect, visibleSlides)) {
-        const monthKey = getMonthKey(dates[dayIndex]);
-        if (!leftmost || position < leftmost.position) {
-          leftmost = { dayIndex, position, monthKey };
-        }
+    const slideRect = getSlideRect(slide);
+    const position = slideRect.left - swiperRect.left;
+
+    if (checkSlideVisibility(dayIndex, slideRect, swiperRect, visibleSlides)) {
+      const monthKey = getMonthKey(dates[dayIndex]);
+      if (!leftmost || position < leftmost.position) {
+        return { dayIndex, position, monthKey };
       }
     }
-  });
 
-  return leftmost;
-};
+    return leftmost;
+  },
+  null,
+);
 
 export const hasFixedMonthVisibleDays = (
   swiper: SwiperType,
@@ -98,19 +110,15 @@ export const hasFixedMonthVisibleDays = (
 
   const fixedMonthKey = getMonthKey(dates[fixedMonthIndex]);
 
-  for (let i = 0; i < dates.length; i += 1) {
-    if (getMonthKey(dates[i]) === fixedMonthKey) {
-      const slide = swiper.slides[i];
-      if (slide) {
-        const slideRect = getSlideRect(slide);
-        if (isSlideVisible(slideRect, swiperRect)) {
-          return true;
-        }
-      }
-    }
-  }
+  return dates.some((date, index) => {
+    if (getMonthKey(date) !== fixedMonthKey) return false;
 
-  return false;
+    const slide = swiper.slides[index];
+    if (!slide) return false;
+
+    const slideRect = getSlideRect(slide);
+    return isSlideVisible(slideRect, swiperRect);
+  });
 };
 
 export const findFirstDayOfMonth = (
@@ -130,9 +138,6 @@ export const determineFixedMonth = (
   fixedMonthIndex: number | null,
   currentFixedMonthHasVisibleDays: boolean,
 ): { shouldFix: boolean; leftmostDayIndex: number | null } => {
-  let shouldFix = false;
-  let leftmostDayIndex: number | null = null;
-
   if (leftmostVisibleDay) {
     const firstDayOfLeftmostMonth = findFirstDayOfMonth(
       firstDayIndices,
@@ -141,8 +146,7 @@ export const determineFixedMonth = (
     );
 
     if (firstDayOfLeftmostMonth !== undefined) {
-      shouldFix = true;
-      leftmostDayIndex = firstDayOfLeftmostMonth;
+      return { shouldFix: true, leftmostDayIndex: firstDayOfLeftmostMonth };
     }
   }
 
@@ -162,14 +166,13 @@ export const determineFixedMonth = (
         const isDifferentMonth = fixedMonthIndex === null
           || firstDayOfLastMonth !== fixedMonthIndex;
         if (isDifferentMonth && !currentFixedMonthHasVisibleDays) {
-          shouldFix = true;
-          leftmostDayIndex = firstDayOfLastMonth;
+          return { shouldFix: true, leftmostDayIndex: firstDayOfLastMonth };
         }
       }
     }
   }
 
-  return { shouldFix, leftmostDayIndex };
+  return { shouldFix: false, leftmostDayIndex: null };
 };
 
 export const createMonthLabels = (
@@ -201,27 +204,11 @@ export const shouldUnfixMonth = (
   const currentFixedSlide = swiper.slides[fixedMonthIndex];
   if (!currentFixedSlide) return false;
 
-  const currentSlideEl = currentFixedSlide as HTMLElement;
+  const currentSlideEl = currentFixedSlide instanceof HTMLElement ? currentFixedSlide : null;
+  if (!currentSlideEl) return false;
+
   const currentRect = currentSlideEl.getBoundingClientRect();
   const currentPosition = currentRect.left - swiperRect.left;
 
   return currentPosition > 0;
-};
-
-export const updateLabelPositions = (
-  monthLabels: MonthLabel[],
-  swiperRect: DOMRect,
-  monthLabelRefs: RefObject<Map<number, HTMLDivElement>>,
-  dayRefs: RefObject<Map<number, HTMLButtonElement>>,
-  swiper: SwiperType,
-): void => {
-  monthLabels.forEach((label) => {
-    const labelElement = monthLabelRefs.current?.get(label.dayIndex);
-    if (labelElement) {
-      const position = label.isFixed
-        ? 0
-        : getElementPosition(label.dayIndex, swiperRect, dayRefs, swiper);
-      labelElement.style.left = `${position}px`;
-    }
-  });
 };

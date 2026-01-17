@@ -1,14 +1,17 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, {
+  useCallback, useMemo, useRef, useState,
+} from 'react';
 import { Kaisei_Tokumin } from 'next/font/google';
 import type { Swiper as SwiperType } from 'swiper';
-import HorizontalSwiper from '../../shared/ui/HorizontalSwiper';
-import generateDateRange, {
+import {
+  HorizontalSwiper,
   formatWeekdayShort,
   formatDay2Digit,
-} from '../../shared/lib/dateUtils';
-import { useMonthLabels } from '../../shared/hooks/useMonthLabels';
+} from '../../../../shared';
+import generateDateRange from '../../lib/dateRangeUtils';
+import { useMonthLabels } from '../../model/useMonthLabels';
 import styles from './BookingCard.module.scss';
 
 const kaiseiTokumin = Kaisei_Tokumin({
@@ -17,8 +20,10 @@ const kaiseiTokumin = Kaisei_Tokumin({
   display: 'swap',
 });
 
+const WEEKS_TO_GENERATE = 6;
+
 function BookingCard() {
-  const dates = generateDateRange(new Date(), 6);
+  const dates = useMemo(() => generateDateRange(new Date(), WEEKS_TO_GENERATE), []);
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
   const dayRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
   const monthLabelRefs = useRef<Map<number, HTMLDivElement>>(new Map());
@@ -34,6 +39,31 @@ function BookingCard() {
     monthLabelsWrapperRef,
     monthLabelRefs,
   });
+
+  const handleLabelRef = useCallback((dayIndex: number) => (el: HTMLDivElement | null) => {
+    if (el) {
+      monthLabelRefs.current.set(dayIndex, el);
+    } else {
+      monthLabelRefs.current.delete(dayIndex);
+    }
+  }, []);
+
+  const handleSelect = useCallback((index: number) => {
+    setSelectedIndex((prevIndex) => (prevIndex === index ? undefined : index));
+  }, []);
+
+  const handleSwiperReady = useCallback((swiper: SwiperType) => {
+    swiperInstanceRef.current = swiper;
+    updateMonthLabels();
+  }, [updateMonthLabels]);
+
+  const handleDayRef = useCallback((index: number) => (el: HTMLButtonElement | null) => {
+    if (el) {
+      dayRefs.current.set(index, el);
+    } else {
+      dayRefs.current.delete(index);
+    }
+  }, []);
 
   return (
     <section className={styles.card}>
@@ -60,19 +90,14 @@ function BookingCard() {
               dayIndex, monthName, position, isFixed,
             }) => (
               <div
-                ref={(el) => {
-                  if (el) {
-                    monthLabelRefs.current.set(dayIndex, el);
-                  } else {
-                    monthLabelRefs.current.delete(dayIndex);
-                  }
-                }}
+                ref={handleLabelRef(dayIndex)}
                 key={`month-${dayIndex}`}
                 className={`${styles.monthLabel} ${
                   isFixed ? styles.monthLabelFixed : ''
                 }`}
                 style={{
                   left: `${position}px`,
+                  transition: 'left 0.2s ease-out',
                 }}
               >
                 {monthName}
@@ -80,12 +105,9 @@ function BookingCard() {
             ))}
           </div>
           <HorizontalSwiper
-            onSelect={(index) => setSelectedIndex(selectedIndex === index ? undefined : index)}
+            onSelect={handleSelect}
             onSlideChange={updateMonthLabels}
-            onSwiperReady={(swiper) => {
-              swiperInstanceRef.current = swiper;
-              updateMonthLabels();
-            }}
+            onSwiperReady={handleSwiperReady}
           >
             {dates.map((date, index) => {
               const dateKey = date.toISOString();
@@ -93,13 +115,7 @@ function BookingCard() {
 
               return (
                 <button
-                  ref={(el) => {
-                    if (el) {
-                      dayRefs.current.set(index, el);
-                    } else {
-                      dayRefs.current.delete(index);
-                    }
-                  }}
+                  ref={handleDayRef(index)}
                   className={`${styles.dayChip} ${isSelected ? styles.dayChipSelected : ''}`}
                   type="button"
                   key={dateKey}

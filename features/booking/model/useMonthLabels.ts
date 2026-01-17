@@ -1,9 +1,17 @@
+'use client';
+
 import {
   useCallback, useEffect, useMemo, useState,
   type RefObject,
 } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
-import { getFirstDayIndices, getLastDayIndices } from '../lib/dateIndices';
+import {
+  getFirstDayIndices,
+  getLastDayIndices,
+  getVisibleSlides,
+  getElementPosition,
+  UPDATE_DELAYS,
+} from '../../../shared';
 import {
   findLeftmostVisibleDay,
   findLeftmostFirstDay,
@@ -12,9 +20,7 @@ import {
   determineFixedMonth,
   createMonthLabels,
   shouldUnfixMonth,
-  updateLabelPositions,
 } from '../lib/monthLabelsUtils';
-import UPDATE_DELAYS from '../lib/constants';
 
 export type MonthLabel = {
   dayIndex: number;
@@ -42,7 +48,6 @@ export const useMonthLabels = ({
 }: UseMonthLabelsParams) => {
   const [monthLabels, setMonthLabels] = useState<MonthLabel[]>([]);
   const [fixedMonthIndex, setFixedMonthIndex] = useState<number | null>(null);
-  const [fixedPosition, setFixedPosition] = useState<number | null>(null);
 
   const firstDayIndices = useMemo(() => getFirstDayIndices(dates), [dates]);
   const lastDayIndices = useMemo(() => getLastDayIndices(dates), [dates]);
@@ -54,8 +59,9 @@ export const useMonthLabels = ({
 
       if (!swiperContainer || !swiper) return;
 
-      const visibleSlides = (swiper as any).visibleSlides || [];
-      const swiperEl = swiper.el as HTMLElement;
+      const visibleSlides = getVisibleSlides(swiper);
+      const swiperEl = swiper.el instanceof HTMLElement ? swiper.el : null;
+      if (!swiperEl) return;
       const swiperRect = swiperEl.getBoundingClientRect();
       const containerRect = swiperContainer.getBoundingClientRect();
       const swiperLeftOffset = swiperRect.left - containerRect.left;
@@ -95,12 +101,6 @@ export const useMonthLabels = ({
         ? leftmostDayIndex
         : fixedMonthIndex;
 
-      const newFixedPosition = shouldFix
-        && leftmostDayIndex !== null
-        && fixedMonthIndex !== leftmostDayIndex
-        ? 0
-        : fixedPosition;
-
       const labels = createMonthLabels(
         firstDayIndices,
         dates,
@@ -120,13 +120,9 @@ export const useMonthLabels = ({
 
       if (shouldFix && leftmostDayIndex !== null) {
         setFixedMonthIndex(leftmostDayIndex);
-        if (newFixedPosition !== null) {
-          setFixedPosition(newFixedPosition);
-        }
       } else if (!shouldFix && fixedMonthIndex !== null) {
         if (shouldUnfixMonth(swiper, swiperRect, fixedMonthIndex)) {
           setFixedMonthIndex(null);
-          setFixedPosition(null);
         }
       }
     });
@@ -134,7 +130,6 @@ export const useMonthLabels = ({
     dates,
     firstDayIndices,
     fixedMonthIndex,
-    fixedPosition,
     dayRefs,
     swiperContainerRef,
     swiperInstanceRef,
@@ -166,10 +161,20 @@ export const useMonthLabels = ({
 
         if (!swiperContainer || !swiper) return;
 
-        const swiperEl = swiper.el as HTMLElement;
+        const swiperEl = swiper.el instanceof HTMLElement ? swiper.el : null;
+        if (!swiperEl) return;
         const swiperRect = swiperEl.getBoundingClientRect();
 
-        updateLabelPositions(monthLabels, swiperRect, monthLabelRefs, dayRefs, swiper);
+        monthLabels.forEach((label) => {
+          const labelElement = monthLabelRefs.current?.get(label.dayIndex);
+          if (labelElement) {
+            const newPosition = label.isFixed
+              ? 0
+              : getElementPosition(label.dayIndex, swiperRect, dayRefs, swiper);
+            labelElement.style.transition = 'left 0.2s ease-out';
+            labelElement.style.left = `${newPosition}px`;
+          }
+        });
       });
     };
 

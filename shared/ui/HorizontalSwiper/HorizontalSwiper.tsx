@@ -1,11 +1,22 @@
 'use client';
 
-import React, { Children, isValidElement, useId, useRef, useState, type ReactNode } from 'react';
+import React, {
+  Children, isValidElement, useCallback, useId, useRef, useState, type ReactNode,
+} from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Navigation } from 'swiper/modules';
 import { ArrowLeft, ArrowRight } from '../icons';
 import styles from './HorizontalSwiper.module.scss';
+
+const SPACE_BETWEEN_SLIDES = 8;
+const SLIDES_PER_GROUP = 1;
+
+const getSlideKey = (child: unknown, baseId: string, index: number): string | number => (
+  isValidElement(child) && child.key
+    ? child.key
+    : `${baseId}-slide-${index}`
+);
 
 type HorizontalSwiperProps = {
   children: ReactNode;
@@ -25,19 +36,33 @@ function HorizontalSwiper({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  const handleSelect = (index: number) => {
-    if (onSelect) {
-      onSelect(index);
-    }
-  };
+  const handleSelect = useCallback((index: number) => {
+    onSelect?.(index);
+  }, [onSelect]);
 
-  const handleSlideChange = (swiper: SwiperType) => {
+  const handleSlideClick = useCallback((index: number) => () => {
+    handleSelect(index);
+  }, [handleSelect]);
+
+  const handleSlideChange = useCallback((swiper: SwiperType) => {
     setCanScrollLeft(!swiper.isBeginning);
     setCanScrollRight(!swiper.isEnd);
-    if (onSlideChange) {
-      onSlideChange();
-    }
-  };
+    onSlideChange?.();
+  }, [onSlideChange]);
+
+  const handleSwiperReady = useCallback((swiper: SwiperType) => {
+    swiperRef.current = swiper;
+    handleSlideChange(swiper);
+    onSwiperReady?.(swiper);
+  }, [handleSlideChange, onSwiperReady]);
+
+  const handleSlidePrev = useCallback(() => {
+    swiperRef.current?.slidePrev();
+  }, []);
+
+  const handleSlideNext = useCallback(() => {
+    swiperRef.current?.slideNext();
+  }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -45,47 +70,36 @@ function HorizontalSwiper({
         className={styles.button}
         type="button"
         aria-label="Scroll left"
-        onClick={() => swiperRef.current?.slidePrev()}
+        onClick={handleSlidePrev}
         disabled={!canScrollLeft}
       >
         <ArrowLeft />
       </button>
       <Swiper
         modules={[Navigation]}
-        spaceBetween={8}
-        slidesPerView="auto"
-        slidesPerGroup={1}
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-          handleSlideChange(swiper);
-          if (onSwiperReady) {
-            onSwiperReady(swiper);
-          }
-        }}
+        spaceBetween={SPACE_BETWEEN_SLIDES}
+        slidesPerView={6}
+        slidesPerGroup={SLIDES_PER_GROUP}
+        onSwiper={handleSwiperReady}
         onSlideChange={handleSlideChange}
         onSlideChangeTransitionEnd={handleSlideChange}
         className={styles.swiper}
       >
-        {childrenArray.map((child, index) => {
-          const key = isValidElement(child) && child.key
-            ? child.key
-            : `${baseId}-slide-${index}`;
-          return (
-            <SwiperSlide
-              key={key}
-              className={styles.slide}
-              onClick={() => handleSelect(index)}
-            >
-              {child}
-            </SwiperSlide>
-          );
-        })}
+        {childrenArray.map((child, index) => (
+          <SwiperSlide
+            key={getSlideKey(child, baseId, index)}
+            className={styles.slide}
+            onClick={handleSlideClick(index)}
+          >
+            {child}
+          </SwiperSlide>
+        ))}
       </Swiper>
       <button
         className={styles.button}
         type="button"
         aria-label="Scroll right"
-        onClick={() => swiperRef.current?.slideNext()}
+        onClick={handleSlideNext}
         disabled={!canScrollRight}
       >
         <ArrowRight />

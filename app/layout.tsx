@@ -2,7 +2,7 @@ import React from 'react';
 import { Poppins } from 'next/font/google';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import Header from '../widgets/Header';
+import Header from '../widgets';
 import '@/shared/styles/globals.scss';
 
 export const metadata: Metadata = {
