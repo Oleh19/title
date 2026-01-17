@@ -1,3 +1,37 @@
+@mixin gradient-overlay {
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: var(--gradient-overlay-offset);
+    width: var(--gradient-overlay-width);
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, var(--gradient-overlay-opacity)) 100%
+    );
+    pointer-events: none;
+    z-index: var(--z-index-overlay);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: var(--gradient-overlay-offset);
+    width: var(--gradient-overlay-width);
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, var(--gradient-overlay-opacity)) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    pointer-events: none;
+    z-index: var(--z-index-overlay);
+  }
+}
+
 .card {
   position: fixed;
   bottom: 0;
@@ -7,4 +41,159 @@
   width: 100%;
   background: var(--color-white);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 32px 23px 12px 23px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.avatar {
+  width: var(--size-avatar);
+  height: var(--size-avatar);
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.infoTitle {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-black);
+}
+
+.infoDescription {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--info-description-color);
+}
+
+.daysBlock {
+  position: relative;
+  @include gradient-overlay;
+}
+
+.daysBlockEnd::after {
+  display: none;
+}
+
+.daysBlockBeginning::before {
+  display: none;
+}
+
+.swiperContainer {
+  position: relative;
+}
+
+.monthLabelsWrapper {
+  position: absolute;
+  top: calc(-0.8 * var(--height-month-label));
+  height: var(--height-month-label);
+  overflow-x: hidden;
+  overflow-y: visible;
+  pointer-events: none;
+  z-index: var(--z-index-elevated);
+}
+
+.monthLabel {
+  position: absolute;
+  top: 0;
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--info-description-color);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: var(--z-index-elevated);
+}
+
+.dayChip {
+  border: var(--border-width) solid var(--day-chip-border);
+  background: var(--color-white);
+  color: var(--color-text-default);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--size-day-chip);
+  height: var(--size-day-chip);
+  flex: 0 0 auto;
+}
+
+.dayChipSelected {
+  background: var(--day-chip-selected-bg);
+  border: var(--border-width) solid transparent;
+  color: var(--color-selected);
+}
+
+.dayWeek,
+.dayDate {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+}
+
+.timeBlock {
+  position: relative;
+  @include gradient-overlay;
+}
+
+.timeBlockEnd::after {
+  display: none;
+}
+
+.timeBlockBeginning::before {
+  display: none;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: auto;
+}
+
+.timeChip {
+  border: var(--border-width) solid var(--day-chip-border);
+  background: var(--color-white);
+  color: var(--color-text-default);
+  border-radius: var(--radius-pill);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  width: var(--size-time-chip-width);
+  height: var(--size-time-chip-height);
+  flex: 0 0 auto;
+}
+
+.timeChipSelected {
+  background: var(--day-chip-selected-bg);
+  border: var(--border-width) solid transparent;
+  color: var(--color-selected);
+}
+
+.timeChip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--info-description-color);
 }
